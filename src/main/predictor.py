@@ -14,38 +14,36 @@ class Predictor:
     __use_cuda = torch.cuda.is_available()
     __loader = Loader()
 
-    @classmethod
-    async def __get_model(cls):
+    async def __get_model(self):
         """
         Load the model file from the model directory
         """
-        if cls.__model is None:
+        if self.__model is None:
             # load in the untrained resent architecture
-            cls.__model = models.resnet50()
+            self.__model = models.resnet50()
             # add the final layer to the model
-            cls.__model.fc = nn.Sequential(
+            self.__model.fc = nn.Sequential(
                 nn.Linear(2048, 256),
                 nn.ReLU(inplace=True),
                 nn.Linear(256, 3)
             )
             # load in the model state dictionary
-            cls.__model.load_state_dict(torch.load(model))
+            self.__model.load_state_dict(torch.load(model))
             # put the model in the evaluation state
-            cls.__model.eval()
+            self.__model.eval()
 
-            if cls.__use_cuda:
-                cls.__model.cuda()
+            if self.__use_cuda:
+                self.__model.cuda()
 
-    @classmethod
-    async def predict(cls, input):
+    async def predict(self, input):
         """
         Make a prediction with the resnet 50
         """
-        await cls.__get_model()
-        input_torch = await cls.__loader.transform_input(input)
-        output_torch = cls.__model(input_torch)
+        await self.__get_model()
+        input_torch = await self.__loader.transform_input(input)
+        output_torch = self.__model(input_torch)
         # convert scores to probabilities
         output_torch_probs = f.softmax(output_torch, dim=1)
         # convert to numpy
-        output_np = await cls.__loader.transform_output(output_torch_probs)
+        output_np = await self.__loader.transform_output(output_torch_probs)
         return output_np

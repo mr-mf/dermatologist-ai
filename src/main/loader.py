@@ -8,8 +8,7 @@ class Loader:
 
     __use_cuda = torch.cuda.is_available()
 
-    @classmethod
-    async def transform_input(cls, image):
+    async def transform_input(self, image):
         """
         Takes in the image and applies transformations to it:
         -- re sizes the image to 224 x 223
@@ -27,7 +26,7 @@ class Loader:
         ])
         image_tensor = transformation(img)
 
-        if cls.__use_cuda:
+        if self.__use_cuda:
             image_tensor.cuda()
 
         # un-squeeze the first dimension so we can have the batch information
@@ -35,15 +34,14 @@ class Loader:
 
         return image_tensor
 
-    @classmethod
-    async def transform_output(cls, tensor_array):
+    async def transform_output(self, tensor_array):
         """
         Detaches from GPU and converts to a numpy array
 
         :param tensor_array:
         :return:
         """
-        if cls.__use_cuda:
+        if self.__use_cuda:
             tensor_array.cpu()
         # convert to numpy
         numpy_array = tensor_array.detach().numpy()
