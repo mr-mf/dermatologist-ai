@@ -1,8 +1,10 @@
 from aiohttp import web
+from src.main.predictor import Predictor
 
 
 class Controller:
-    __app__ = web.Application()
+    __app = web.Application()
+    __predictor = Predictor()
 
     @classmethod
     async def run_app(cls):
@@ -10,15 +12,21 @@ class Controller:
         Route the requests to the methods that can handle them
         :return:  __app__
         """
-        cls.__app__.add_routes([web.get("/", cls.handle)])
-        return cls.__app__
+        cls.__app.add_routes([web.post("/predict", cls.handle)])
+        return cls.__app
 
-    async def handle(request):
+    @classmethod
+    async def handle(cls, request: web.Request):
         """
         Accept the photo, parse into acceptable format and make a prediction
         :return: json
         """
-        return web.Response(text="Hello world")
+        post = await request.post()
+        image = post.get('image')
+        if image:
+            img_content = image.file.read()
+        output = await cls.__predictor.predict(img_content)
+        return web.json_response({"melanoma probability": str(output)})
 
 
 if __name__ == '__main__':
