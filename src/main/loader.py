@@ -11,7 +11,7 @@ class Loader:
     async def transform_input(self, image):
         """
         Takes in the image and applies transformations to it:
-        -- re sizes the image to 224 x 223
+        -- re sizes the image to 224 x 224
         -- normalises mean and std of all RGB layers (standardized for resnet)
         -- converts to PyTorch tensor
 

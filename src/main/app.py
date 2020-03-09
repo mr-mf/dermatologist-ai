@@ -10,7 +10,7 @@ class Controller:
     async def run_app(cls):
         """
         Route the requests to the methods that can handle them
-        :return:  __app__
+        :return:  __app
         """
         cls.__app.add_routes([web.post("/predict", cls.handle)])
         return cls.__app
