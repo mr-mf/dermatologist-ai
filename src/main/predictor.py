@@ -3,7 +3,7 @@ import os
 from torchvision import models
 import torch.nn as nn
 import torch.nn.functional as f
-from src.main.loader import Loader
+from loader import Loader
 
 model_path = '../model/'
 model = os.path.join(model_path, 'resnet50.pt')

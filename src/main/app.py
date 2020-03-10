@@ -1,5 +1,5 @@
 from aiohttp import web
-from src.main.predictor import Predictor
+from predictor import Predictor
 
 
 class Controller:
